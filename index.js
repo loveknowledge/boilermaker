@@ -1,7 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+const app = require('./server');
 
-ReactDOM.render(
-  <div>Hello, world!</div>,
-  document.getElementById('app') // make sure this is the same as the id of the div in your index.html
-);
+// Server
+const port = process.env.PORT || 3000;
+app.listen(port, function() {
+  console.log('Knock, knock');
+  console.log("Who's there?");
+  console.log(`Your server, listening on port ${port}`);
+});

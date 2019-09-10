@@ -1,28 +1,33 @@
 const path = require('path');
 const express = require('express');
-const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
+const app = express();
+
+// Logging middleware
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, './public')));
+
+// Static middleware
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Parsing middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api', require('../apiRoutes'));
+// Matches all requests to /api
+app.use('/api', require('./api'));
+
+// Sends user to index.html for requests that don't match api routes
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log('Knock, knock');
-  console.log("Who's there?");
-  console.log(`Your server, listening on port ${port}`);
-});
-
+// 500 error handler
 app.use(function(err, req, res, next) {
   console.error(err);
   console.error(err.stack);
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
+
+module.exports = app;
